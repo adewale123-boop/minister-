@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>unicalc. | Nigerian Post-UTME Aggregate Calculator</title>
+    <meta name="description" content="Calculate your Post-UTME aggregate score instantly for the top 59 universities in Nigeria. unicalc.tye provides accurate, fast, and easy admission score calculations based on your JAMB and screening results.">
+    <meta name="keywords" content="Post-UTME calculator, JAMB aggregate score, Nigerian universities admission, unicalc.tye, UNILAG aggregate, OAU aggregate, UI aggregate, calculate JAMB score, admission calculator Nigeria">
+    <meta name="author" content="unicalc.tye">
+    <meta name="robots" content="index, follow">
+    
+    <meta property="og:title" content="unicalc.tye | Post-UTME Aggregate Calculator">
+    <meta property="og:description" content="Calculate your Post-UTME aggregate score instantly for the top 59 universities in Nigeria. Fast and easy admission score calculations.">
+    <meta property="og:type" content="website">
+
+    <style>
+        /* CSS Styling - Black and Blue Theme */
+        :root {
+            --bg-color: #050505;
+            --container-bg: #111827;
+            --primary-blue: #007bff;
+            --hover-blue: #0056b3;
+            --text-light: #ffffff;
+            --text-muted: #9ca3af;
+            --input-bg: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--container-bg);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.15);
+            border: 1px solid rgba(0, 123, 255, 0.3);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .header h1 {
+            color: var(--primary-blue);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #d1d5db;
+        }
+
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--input-bg);
+            border: 1px solid #374151;
+            border-radius: 6px;
+            color: var(--text-light);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus, select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .grades-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .grades-grid select:last-child {
+            grid-column: span 2;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-blue);
+            color: var(--text-light);
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: var(--hover-blue);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #result {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background-color: rgba(0, 123, 255, 0.1);
+            border-left: 4px solid var(--primary-blue);
+            border-radius: 4px;
+        }
+
+        #result h3 {
+            margin-bottom: 10px;
+            color: var(--primary-blue);
+        }
+
+        #result p {
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+
+        .aggregate-score {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4da3ff;
+            margin: 15px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: #374151;
+            color: #9ca3af;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>𝕌𝕟𝕚𝕔𝕒𝕝𝕔.</h1>
+            <p>Calculate your Post-UTME Aggregate Score</p>
+        </div>
+
+        <form id="calcForm">
+            <div class="form-group">
+                <label for="university">Select University:</label>
+                <select id="university" required>
+                    <option value="" disabled selected>-- Choose your institution --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="jamb">JAMB UTME Score (Max 400):</label>
+                <input type="number" id="jamb" step="any" max="400" min="0" placeholder="e.g. 250" required>
+            </div>
+
+            <div class="form-group" id="postutme-group">
+                <label id="postutme-label" for="postutme">Post-UTME Score (Max 100):</label>
+                <input type="number" id="postutme" step="any" max="100" min="0" placeholder="e.g. 68">
+            </div>
+
+            <div class="form-group" id="olevel-group" style="display: none;">
+                <label id="olevel-label">Select 5 Core O'Level Grades:</label>
+                <div class="grades-grid">
+                    <select class="olevel-grade">
+                        <option value="" disabled selected>Subject 1</option>
+                        <option value="A1">A1</option><option value="B2">B2</option><option value="B3">B3</option>
+                        <option value="C4">C4</option><option value="C5">C5</option><option value="C6">C6</option>
+                    </select>
+                    <select class="olevel-grade">
+                        <option value="" disabled selected>Subject 2</option>
+                        <option value="A1">A1</option><option value="B2">B2</option><option value="B3">B3</option>
+                        <option value="C4">C4</option><option value="C5">C5</option><option value="C6">C6</option>
+                    </select>
+                    <select class="olevel-grade">
+                        <option value="" disabled selected>Subject 3</option>
+                        <option value="A1">A1</option><option value="B2">B2</option><option value="B3">B3</option>
+                        <option value="C4">C4</option><option value="C5">C5</option><option value="C6">C6</option>
+                    </select>
+                    <select class="olevel-grade">
+                        <option value="" disabled selected>Subject 4</option>
+                        <option value="A1">A1</option><option value="B2">B2</option><option value="B3">B3</option>
+                        <option value="C4">C4</option><option value="C5">C5</option><option value="C6">C6</option>
+                    </select>
+                    <select class="olevel-grade">
+                        <option value="" disabled selected>Subject 5</option>
+                        <option value="A1">A1</option><option value="B2">B2</option><option value="B3">B3</option>
+                        <option value="C4">C4</option><option value="C5">C5</option><option value="C6">C6</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit">Calculate Aggregate</button>
+        </form>
+
+        <div id="result">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const uniSelect = document.getElementById("university");
+            const postutmeGroup = document.getElementById("postutme-group");
+            const postutmeInput = document.getElementById("postutme");
+            const postutmeLabel = document.getElementById("postutme-label");
+            
+            const olevelGroup = document.getElementById("olevel-group");
+            const olevelLabel = document.getElementById("olevel-label");
+            const gradeInputs = document.querySelectorAll(".olevel-grade");
+
+            // Categorize the 59 Universities into the 4 system groups
+            const universities = {
+                // Group 1: Standard 50:50 (JAMB/8 + PostUTME/2) - Max PostUTME 100
+                "Ahmadu Bello University (ABU)": "Group1", "University of Nigeria, Nsukka (UNN)": "Group1", "University of Ilorin (UNILORIN)": "Group1", "Covenant University (CU)": "Group1", "Federal University of Technology, Minna (FUTMINNA)": "Group1", "University of Port Harcourt (UNIPORT)": "Group1", "University of Benin (UNIBEN)": "Group1", "Nnamdi Azikiwe University (UNIZIK)": "Group1", "Federal University of Technology, Akure (FUTA)": "Group1", "Bayero University Kano (BUK)": "Group1", "University of Calabar (UNICAL)": "Group1", "University of Uyo (UNIUYO)": "Group1", "Federal University of Technology, Owerri (FUTO)": "Group1", "University of Abuja (UNIABUJA)": "Group1", "Ladoke Akintola University of Technology (LAUTECH)": "Group1", "Olabisi Onabanjo University (OOU)": "Group1", "Federal University of Agriculture, Abeokuta (FUNAAB)": "Group1", "Ambrose Alli University (AAU)": "Group1", "Modibbo Adama University of Technology (MAUTECH)": "Group1", "University of Maiduguri (UNIMAID)": "Group1", "University of Jos (UNIJOS)": "Group1", "Michael Okpara University of Agriculture (MOUAU)": "Group1", "Afe Babalola University (ABUAD)": "Group1", "Babcock University": "Group1", "Bowen University": "Group1", "Bingham University": "Group1", "Bells University of Technology": "Group1", "Crawford University": "Group1", "Nile University of Nigeria": "Group1",
+
+                // Group 2: UNILAG System (JAMB/8 + PostUTME + OLevel) - Max PostUTME 30, Max OLevel 20
+                "University of Lagos (UNILAG)": "Group2",
+
+                // Group 3: UI System (JAMB/8 + PostUTME) - Max PostUTME 50
+                "University of Ibadan (UI)": "Group3", "Obafemi Awolowo University (OAU)": "Group3",
+
+                // Group 4: Point-Based Screening (JAMB/8 + OLevel) - Max OLevel 50, NO PostUTME Exam
+                "Lagos State University (LASU)": "Group4", "Osun State University (UNIOSUN)": "Group4", "Ekiti State University (EKSU)": "Group4", "Delta State University (DELSU)": "Group4", "Adekunle Ajasin University (AAUA)": "Group4", "Rivers State University (RSU)": "Group4", "Benue State University (BSU)": "Group4", "Kaduna State University (KASU)": "Group4", "Kwara State University (KWASU)": "Group4", "Niger Delta University (NDU)": "Group4", "Enugu State University of Science and Technology (ESUT)": "Group4", "Tai Solarin University of Education (TASUED)": "Group4", "Usmanu Danfodiyo University (UDUSOK)": "Group4", "Abubakar Tafawa Balewa University (ATBU)": "Group4", "Ignatius Ajuru University of Education (IAUE)": "Group4", "Federal University, Oye-Ekiti (FUOYE)": "Group4", "Federal University, Dutse (FUD)": "Group4", "Federal University, Lafia (FULAFIA)": "Group4", "Federal University, Lokoja (FULOKOJA)": "Group4", "Federal University, Kashere (FUKASHERE)": "Group4", "Federal University, Wukari (FUWUKARI)": "Group4", "Federal University, Dutsin-Ma (FUDMA)": "Group4", "Federal University, Ndufu-Alike (FUNAI)": "Group4", "Federal University, Otuoke (FUOTUOKE)": "Group4", "Federal University, Gusau (FUGUS)": "Group4", "Federal University, Gashua (FUGASHUA)": "Group4", "Federal University, Birnin Kebbi (FUBK)": "Group4"
+            };
+
+            // Alphabetize and populate dropdown
+            const uniNames = Object.keys(universities).sort();
+            uniNames.forEach(uni => {
+                let option = document.createElement("option");
+                option.value = uni;
+                option.textContent = uni;
+                uniSelect.appendChild(option);
+            });
+
+            // Adjust form inputs based on selected university
+            uniSelect.addEventListener("change", () => {
+                const selectedUni = uniSelect.value;
+                const group = universities[selectedUni];
+
+                // Reset inputs
+                postutmeInput.value = "";
+                gradeInputs.forEach(input => input.value = "");
+
+                if (group === "Group1") {
+                    postutmeGroup.style.display = "block";
+                    olevelGroup.style.display = "none";
+                    postutmeLabel.textContent = "Post-UTME Score (Max 100):";
+                    postutmeInput.max = "100";
+                    postutmeInput.required = true;
+                    gradeInputs.forEach(input => input.required = false);
+
+                } else if (group === "Group2") {
+                    postutmeGroup.style.display = "block";
+                    olevelGroup.style.display = "block";
+                    postutmeLabel.textContent = "Post-UTME Score (Max 30):";
+                    postutmeInput.max = "30";
+                    olevelLabel.textContent = "Select 5 Core O'Level Grades (Max 20 Points):";
+                    postutmeInput.required = true;
+                    gradeInputs.forEach(input => input.required = true);
+
+                } else if (group === "Group3") {
+                    postutmeGroup.style.display = "block";
+                    olevelGroup.style.display = "none";
+                    postutmeLabel.textContent = "Post-UTME Score (Max 50):";
+                    postutmeInput.max = "50";
+                    postutmeInput.required = true;
+                    gradeInputs.forEach(input => input.required = false);
+
+                } else if (group === "Group4") {
+                    postutmeGroup.style.display = "none";
+                    olevelGroup.style.display = "block";
+                    olevelLabel.textContent = "Select 5 Core O'Level Grades (Max 50 Points):";
+                    postutmeInput.required = false;
+                    gradeInputs.forEach(input => input.required = true);
+                }
+            });
+
+            // Function to calculate O'level points based on the group system
+            function calculateOlevelPoints(group) {
+                let totalPoints = 0;
+                gradeInputs.forEach(input => {
+                    let grade = input.value;
+                    if (group === "Group2") {
+                        // Max 20 points system (UNILAG Style)
+                        if (grade === "A1") totalPoints += 4.0;
+                        else if (grade === "B2") totalPoints += 3.6;
+                        else if (grade === "B3") totalPoints += 3.2;
+                        else if (grade === "C4") totalPoints += 2.8;
+                        else if (grade === "C5") totalPoints += 2.4;
+                        else if (grade === "C6") totalPoints += 2.0;
+                    } else if (group === "Group4") {
+                        // Max 50 points system (UNIOSUN Style)
+                        if (grade === "A1") totalPoints += 10;
+                        else if (grade === "B2") totalPoints += 9;
+                        else if (grade === "B3") totalPoints += 8;
+                        else if (grade === "C4") totalPoints += 7;
+                        else if (grade === "C5") totalPoints += 6;
+                        else if (grade === "C6") totalPoints += 5;
+                    }
+                });
+                return totalPoints;
+            }
+
+            // Handle calculation calculation
+            const form = document.getElementById("calcForm");
+            const resultDiv = document.getElementById("result");
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                
+                const selectedUni = uniSelect.value;
+                const group = universities[selectedUni];
+                
+                const jamb = parseFloat(document.getElementById("jamb").value);
+                const postutme = parseFloat(postutmeInput.value) || 0;
+                const calculatedOlevel = calculateOlevelPoints(group);
+
+                // Validate Max JAMB
+                if(jamb > 400) {
+                    alert("JAMB Score cannot exceed 400.");
+                    return;
+                }
+
+                let aggregate = 0;
+                let formulaText = "";
+                let breakdownText = "";
+
+                // Group-specific Math
+                if (group === "Group1") {
+                    if (postutme > 100) return alert("Post-UTME cannot exceed 100 for this institution.");
+                    aggregate = (jamb / 8) + (postutme / 2);
+                    formulaText = "Standard 50:50 System";
+                    breakdownText = `<p><strong>JAMB (50%):</strong> ${(jamb/8).toFixed(2)} | <strong>Post-UTME (50%):</strong> ${(postutme/2).toFixed(2)}</p>`;
+                
+                } else if (group === "Group2") {
+                    if (postutme > 30) return alert("Post-UTME cannot exceed 30 for this institution.");
+                    aggregate = (jamb / 8) + postutme + calculatedOlevel;
+                    formulaText = "50:30:20 System";
+                    breakdownText = `<p><strong>JAMB (50%):</strong> ${(jamb/8).toFixed(2)} | <strong>Post-UTME (30%):</strong> ${postutme} | <strong>O'Level (20%):</strong> ${calculatedOlevel.toFixed(1)}</p>`;
+                
+                } else if (group === "Group3") {
+                    if (postutme > 50) return alert("Post-UTME cannot exceed 50 for this institution.");
+                    aggregate = (jamb / 8) + postutme;
+                    formulaText = "Over 50 System";
+                    breakdownText = `<p><strong>JAMB (50%):</strong> ${(jamb/8).toFixed(2)} | <strong>Post-UTME (50%):</strong> ${postutme}</p>`;
+                
+                } else if (group === "Group4") {
+                    aggregate = (jamb / 8) + calculatedOlevel;
+                    formulaText = "Point-Based Screening (No Exam)";
+                    breakdownText = `<p><strong>JAMB (50%):</strong> ${(jamb/8).toFixed(2)} | <strong>Screening Points (50%):</strong> ${calculatedOlevel}</p>`;
+                }
+
+                // Display the result
+                resultDiv.innerHTML = `
+                    <h3>Calculation Complete</h3>
+                    <div class="badge">${formulaText}</div>
+                    <p><strong>Institution:</strong> ${selectedUni}</p>
+                    ${breakdownText}
+                    <div class="aggregate-score">Final Aggregate: ${aggregate.toFixed(2)}%</div>
+                `;
+                
+                resultDiv.style.display = "block";
+            });
+        });
+    </script>
+</body>
+</html>
